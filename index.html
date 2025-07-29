@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Will U ?</title>
+  <title>Will U Let Me Hit?</title>
   <style>
     body {
       margin: 0;
@@ -131,7 +131,7 @@
   <div class="ribbons"></div>
 
   <div class="popup" id="mainPopup">
-    <h1>Will U Let Me Crack yo petite ahh?</h1>
+    <h1>Will U Let Me Hit?</h1>
     <button onclick="startSequence()">Yes</button>
     <button onclick="startSequence()">Yes lmao</button>
   </div>
@@ -164,6 +164,8 @@
 
   <script>
     function startSequence() {
+      goFullscreen(); // ⬅️ Fullscreen the page
+
       document.getElementById("mainPopup").style.display = "none";
       const overlay = document.getElementById("overlay");
       overlay.style.display = "flex";
@@ -173,14 +175,26 @@
       music.play().catch(() => {});
 
       setTimeout(() => {
-        typeWriter("209.85.220.69 — this your ip", document.getElementById("ipText"), () => {
+        const fakeIP = getFakeIP();
+        typeWriter(`${fakeIP} — this your ip`, document.getElementById("ipText"), () => {
           overlay.classList.add("explode");
           document.getElementById("boomSound").play();
 
-          // 🔥 Add dark twist after short delay
+          // Show dark twist
           setTimeout(showFinalWarning, 2000);
         });
       }, 1500);
+    }
+
+    function goFullscreen() {
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen();
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen();
+      } else if (docEl.msRequestFullscreen) {
+        docEl.msRequestFullscreen();
+      }
     }
 
     function typeWriter(text, element, callback) {
@@ -204,6 +218,15 @@
       warning.classList.add("glitch");
       document.getElementById("sirenSound").play();
     }
+
+    function getFakeIP() {
+      return `${rand(100, 255)}.${rand(0, 255)}.${rand(0, 255)}.${rand(0, 255)}`;
+    }
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
   </script>
 </body>
 </html>
+
