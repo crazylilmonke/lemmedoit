@@ -7,7 +7,8 @@
   <style>
     body {
       margin: 0;
-      background: pink;
+      padding: 0;
+      background-color: pink;
       font-family: 'Comic Sans MS', cursive, sans-serif;
       display: flex;
       justify-content: center;
@@ -17,94 +18,192 @@
       position: relative;
     }
 
-    .ribbon {
+    .ribbons::before, .ribbons::after {
+      content: '';
       position: absolute;
       top: 0;
-      left: 0;
       width: 100%;
       height: 30px;
-      background: repeating-linear-gradient(
-        45deg,
-        hotpink,
-        hotpink 10px,
-        deeppink 10px,
-        deeppink 20px
-      );
+      background: repeating-linear-gradient(45deg, hotpink, hotpink 10px, deeppink 10px, deeppink 20px);
+      z-index: 0;
     }
 
     .popup {
+      z-index: 2;
       background: white;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 30px;
+      border-radius: 30px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+      animation: bounceIn 0.6s ease;
       text-align: center;
-      animation: popIn 0.4s ease;
     }
 
     .popup h1 {
       font-size: 24px;
+      margin-bottom: 20px;
     }
 
-    .buttons {
-      margin-top: 20px;
-    }
-
-    .buttons button {
-      background: hotpink;
-      color: white;
-      border: none;
-      border-radius: 10px;
+    .popup button {
       padding: 10px 20px;
       margin: 10px;
       font-size: 16px;
+      background-color: hotpink;
+      color: white;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: 0.2s;
     }
 
-    .buttons button:hover {
+    .popup button:hover {
       transform: scale(1.1);
     }
 
-    .overlay {
+    .overlay, .final-warning {
       position: fixed;
       top: 0;
       left: 0;
-      background: rgba(0,0,0,0.8);
-      width: 100%;
       height: 100%;
-      display: flex;
+      width: 100%;
+      display: none;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      z-index: 10;
       color: white;
-      text-align: center;
       font-size: 24px;
-      padding: 20px;
+      z-index: 3;
     }
 
-    .ip {
+    .overlay {
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .final-warning {
+      background: black;
       font-family: monospace;
-      margin-top: 10px;
-      font-size: 20px;
+      font-size: 28px;
+      color: red;
+      text-align: center;
+    }
+
+    .ip-text {
+      font-family: monospace;
+      margin-top: 20px;
     }
 
     .gameover {
-      margin-top: 20px;
+      margin-top: 30px;
       font-size: 32px;
       color: red;
       font-weight: bold;
     }
 
-    @keyframes popIn {
+    @keyframes bounceIn {
       0% { transform: scale(0.5); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
 
-    @keyframes explosion {
+    @keyframes explode {
       0% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.5); opacity: 0.5; }
       100% { transform: scale(2); opacity: 0; }
     }
 
-    .
+    .explode {
+      animation: explode 0.6s forwards;
+    }
+
+    .glitch {
+      animation: glitch 0.1s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+      100% { transform: translate(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="ribbons"></div>
+
+  <div class="popup" id="mainPopup">
+    <h1>Will U Let Me Hit?</h1>
+    <button onclick="startSequence()">Yes</button>
+    <button onclick="startSequence()">Yes lmao</button>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div>I'm 17 bro 💔</div>
+    <div class="ip-text" id="ipText"></div>
+    <div class="gameover">Game Over Lil Bro</div>
+  </div>
+
+  <div class="final-warning" id="finalWarning">
+    ⚠️ NATIONAL CYBER SECURITY TASK FORCE<br><br>
+    ILLEGAL ACTIVITY DETECTED<br>
+    YOUR SESSION IS BEING MONITORED<br>
+    <br>🚨 STAND BY FOR INTERVENTION 🚨
+  </div>
+
+  <!-- Sounds -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+  </audio>
+
+  <audio id="boomSound">
+    <source src="https://www.soundjay.com/explosion/explosion-01.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="sirenSound">
+    <source src="https://www.soundjay.com/misc/sounds/police-siren-01.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    function startSequence() {
+      document.getElementById("mainPopup").style.display = "none";
+      const overlay = document.getElementById("overlay");
+      overlay.style.display = "flex";
+
+      const music = document.getElementById("bgMusic");
+      music.volume = 0.4;
+      music.play().catch(() => {});
+
+      setTimeout(() => {
+        typeWriter("209.85.220.69 — this your ip", document.getElementById("ipText"), () => {
+          overlay.classList.add("explode");
+          document.getElementById("boomSound").play();
+
+          // 🔥 Add dark twist after short delay
+          setTimeout(showFinalWarning, 2000);
+        });
+      }, 1500);
+    }
+
+    function typeWriter(text, element, callback) {
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, 70);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
+
+    function showFinalWarning() {
+      document.getElementById("overlay").style.display = "none";
+      const warning = document.getElementById("finalWarning");
+      warning.style.display = "flex";
+      warning.classList.add("glitch");
+      document.getElementById("sirenSound").play();
+    }
+  </script>
+</body>
+</html>
